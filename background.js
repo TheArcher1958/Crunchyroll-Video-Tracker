@@ -28,9 +28,14 @@ chrome.runtime.onMessage.addListener(
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function() {
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                        var images = xmlHttp.responseText.match(/<img class="mug" src="https:[\/a-z0-9._-]+/g);
+
                         let msg = {
                             text: "tab-info",
-                            txt: parseInt(xmlHttp.responseText.substr(xmlHttp.responseText.search("ad_breaks") + 69, 10)),
+                            currentEpisodeImage: images[2].replace(/\\/g, "").slice(22),
+                            nextEpisodeImage: images[3].replace(/\\/g, "").slice(22),
+                            currentUrl: tabs[0].url,
+                            introTime: parseInt(xmlHttp.responseText.substr(xmlHttp.responseText.search("ad_breaks") + 69, 10)),
                             title: tabs[0].title,
                             nextEpUrl: xmlHttp.responseText.match(/nextMediaUrl = "http:\\\/\\\/www.crunchyroll.com\\([A-Za-z0-9.\\\/-]+)/)[0].replace(/\\/g, "").slice(16)
                         }

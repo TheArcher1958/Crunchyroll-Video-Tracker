@@ -6,24 +6,33 @@ window.onload = function() {
 
     const videoPlayer = document.querySelector('video');
     if (videoPlayer != null) {
-        init(videoPlayer);
-        videoPlayer.currentTime = 50;
-        window.setInterval(() => getTimeLeftInEpisode(videoPlayer), 2000);
+        vp = videoPlayer;
+
+        init();
     }
 }
 
+function startInterval() {
+    window.setInterval(() => getTimeLeftInEpisode(vp), 5000);
 
-function getTimeLeftInEpisode(vp) {
+}
+
+function getTimeLeftInEpisode() {
     let currentTime = vp.currentTime;
+
     //console.log(vp.duration - currentTime);
     //console.log(currentTime / vp.duration);
     if(currentTime / vp.duration > 0.83) {
-        // chrome.storage.sync.set({'foo': 'hello', 'bar': 'hi'}, function() {
-        //     console.log('Settings saved');
-        // });
+        chrome.storage.sync.set({'nextEpisodeUrl': nextEpURL, 'currentTime': 0.0}, function() {
+            console.log('Settings saved');
+        });
 
         //console.log(tabTitle);
         //console.log("Next Ep!")
+    } else {
+        chrome.storage.sync.set({'nextEpisodeUrl': currentURL, 'currentTime': currentTime}, function() {
+            console.log('Settings saved');
+        });
     }
 }
 
@@ -69,18 +78,40 @@ function showHideSkipButton() {
 
 function messageRecieved(message, sender, response) {
     if(message.text == "tab-info") {
-        introTime = message.txt / 1000
+        introTime = message.introTime / 1000
         tabTitle = message.title;
         nextEpURL = message.nextEpUrl;
+        currentURL = message.currentUrl;
+        currentImage = message.currentEpisodeImage;
+        nextEpisodeImage = message.nextEpisodeImage;
+        console.log("images: " + currentImage + " " + nextEpisodeImage)
         addSkipButton();
+        chrome.storage.sync.get(['nextEpisodeUrl','currentTime'], function(items) {
+            console.log(items.currentTime);
+            console.log(items.nextEpisodeUrl == currentURL)
+            console.log(items.nextEpisodeUrl)
+            console.log(currentURL)
+            if(items.currentTime > 0.0 && items.nextEpisodeUrl == currentURL) {
+                vp.currentTime = items.currentTime;
+            }
+        });
+        window.setTimeout(startInterval, 5)
+        // let links = document.getElementsByClassName('link block-link block');
+        // console.log(links);
+        // console.log(links[2].children[0]);
+        // console.log(links[2].children[0].getAttribute("src"))
     }
 }
 
-function init(vp) {
+function init() {
     chrome.runtime.sendMessage(
         {episode: ""});
 }
-
+let vp = null;
 let introTime = 0;
 let tabTitle = "";
 let nextEpURL = "";
+let currentURL = "";
+let currentImage = "";
+let nextEpisodeImage = "";
+
