@@ -1,9 +1,7 @@
-console.log("Chrome extension is a go!");
 
 chrome.runtime.onMessage.addListener(messageRecieved);
 
 window.onload = function() {
-
     const videoPlayer = document.querySelector('video');
     if (videoPlayer != null) {
         vp = videoPlayer;
@@ -14,23 +12,18 @@ window.onload = function() {
 
 function startInterval() {
     window.setInterval(() => getTimeLeftInEpisode(vp), 5000);
-
 }
 
 function getTimeLeftInEpisode() {
     let currentTime = vp.currentTime;
 
-    //console.log(vp.duration - currentTime);
-    //console.log(currentTime / vp.duration);
     if(currentTime / vp.duration > 0.83) {
-        chrome.storage.sync.set({'nextEpisodeUrl': nextEpURL, 'currentTime': 0.0}, function() {
+        chrome.storage.sync.set({'nextEpisodeUrl': nextEpURL, 'currentTime': 0.0, 'imageURL': nextEpisodeImage, 'episodeTitle': nextEpTitle, 'percentageWatched': 0}, function() {
             console.log('Settings saved');
         });
 
-        //console.log(tabTitle);
-        //console.log("Next Ep!")
     } else {
-        chrome.storage.sync.set({'nextEpisodeUrl': currentURL, 'currentTime': currentTime}, function() {
+        chrome.storage.sync.set({'nextEpisodeUrl': currentURL, 'currentTime': currentTime, 'imageURL': currentImage, 'episodeTitle': tabTitle, 'percentageWatched': currentTime / vp.duration}, function() {
             console.log('Settings saved');
         });
     }
@@ -84,22 +77,14 @@ function messageRecieved(message, sender, response) {
         currentURL = message.currentUrl;
         currentImage = message.currentEpisodeImage;
         nextEpisodeImage = message.nextEpisodeImage;
-        console.log("images: " + currentImage + " " + nextEpisodeImage)
+        nextEpTitle = message.nextEpTitle;
         addSkipButton();
         chrome.storage.sync.get(['nextEpisodeUrl','currentTime'], function(items) {
-            console.log(items.currentTime);
-            console.log(items.nextEpisodeUrl == currentURL)
-            console.log(items.nextEpisodeUrl)
-            console.log(currentURL)
             if(items.currentTime > 0.0 && items.nextEpisodeUrl == currentURL) {
                 vp.currentTime = items.currentTime;
             }
         });
         window.setTimeout(startInterval, 5)
-        // let links = document.getElementsByClassName('link block-link block');
-        // console.log(links);
-        // console.log(links[2].children[0]);
-        // console.log(links[2].children[0].getAttribute("src"))
     }
 }
 
@@ -114,4 +99,5 @@ let nextEpURL = "";
 let currentURL = "";
 let currentImage = "";
 let nextEpisodeImage = "";
+let nextEpTitle = "";
 

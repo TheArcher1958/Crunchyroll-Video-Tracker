@@ -1,39 +1,37 @@
-.crtitle {
+#crtitle {
     margin: 0;
     color: #000000;
     font-size: 14px;
 }
-.crsubtitle {
+#crsubtitle {
     margin: 5px;
     color: #535252;
     font-size: 13px;
 }
-.crcontainer {
+#crcontainer {
     padding: 15px;
     text-align: center;
     width: 350px;
     height: 400px;
     background-color: #e2e2e2;
 }
-.crimagecontainer {
+#crimagecontainer {
     width: 50%;
     margin: 0 auto;
     text-align: center;
 }
-.crimagetext {
-    margin: 0;
-}
-.crprogressbar {
+#crprogressbar {
     background-color: red;
     height: 6px;
     width: 0px;
 }
-.crprogressbarwrapper {
+#crprogressbarwrapper {
     width: 160px;
     background-color: dimgray;
     margin-left: 7px;
     height: 8px;
     padding-top: 2px;
 }
+
 
 
