@@ -1,4 +1,5 @@
 
+
 chrome.runtime.onInstalled.addListener(function() {
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
         chrome.declarativeContent.onPageChanged.addRules([{
@@ -11,10 +12,10 @@ chrome.runtime.onInstalled.addListener(function() {
     });
 });
 
-chrome.browserAction.onClicked.addListener(buttonClicked);
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
+
         chrome.windows.getCurrent(w => {
             chrome.tabs.query({active: true, windowId: w.id}, tabs => {
             let url = tabs[0].url;
@@ -36,10 +37,12 @@ chrome.runtime.onMessage.addListener(
                         }
                         chrome.tabs.sendMessage(tabs[0].id, msg);
                     }
+
                 }
                 xmlHttp.open("GET", url, true); // true for asynchronous
                 xmlHttp.send(null);
                 return true;
-        });
+
         });
     });
+});

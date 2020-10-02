@@ -2,6 +2,7 @@
 chrome.runtime.onMessage.addListener(messageRecieved);
 
 window.onload = function() {
+
     const videoPlayer = document.querySelector('video');
     if (videoPlayer != null) {
         vp = videoPlayer;
@@ -12,6 +13,7 @@ window.onload = function() {
 
 function startInterval() {
     window.setInterval(() => getTimeLeftInEpisode(vp), 5000);
+
 }
 
 function getTimeLeftInEpisode() {
